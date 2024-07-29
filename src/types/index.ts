@@ -14,7 +14,7 @@ export interface ICatalog {
 }
 
 export interface IBasket {
-	items: Map<string, number>;
+	items: IProduct[] | undefined;
 	counter: number;
 	addProduct(id: string): void;
 	removeProduct(id: string): void;
@@ -28,19 +28,21 @@ export enum Modals {
 	contactsModal,
 }
 
-export interface Modal {
+export interface IModal {
 	modal: Modals;
-	elForOpen: HTMLElement;
-	elForClose: HTMLButtonElement;
 	openModal(modal: Modals): void;
 	closeModal(modal: Modals): void;
 }
 
-export interface IBuyers {
+export interface IFormOrder {
 	paymentMethod: string;
 	address: string;
 	email: string;
 	phone: string;
+}
+
+export interface ISuccesOrder {
+	amount: number
 }
 
 export interface IEventEmmitter {
