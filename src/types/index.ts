@@ -1,3 +1,5 @@
+import { IEvents } from '../components/base/events';
+
 export interface IProduct {
 	id: string;
 	title: string;
@@ -20,18 +22,46 @@ export interface IBasket {
 	removeProduct(id: string): void;
 }
 
-export enum Modals {
-	productModal,
-	basketModal,
-	paymentModal,
-	successOrderModal,
-	contactsModal,
+export interface IModal {
+	modal: HTMLElement;
+	elForOpen: HTMLElement;
+	elForClose: HTMLButtonElement;
+	events: IEvents;
+	open(modal: HTMLElement): void;
+	close(modal: HTMLElement): void;
 }
 
-export interface IModal {
-	modal: Modals;
-	openModal(modal: Modals): void;
-	closeModal(modal: Modals): void;
+export interface IModalWithForm extends IModal {
+	submitButton: HTMLButtonElement;
+	_form: HTMLFormElement;
+	formName: string;
+	inputs: NodeListOf<HTMLInputElement>;
+	handleSubmit: Function;
+	errors: Record<string, HTMLElement>;
+	setValid(isValid: boolean): void;
+	getInputValues(): Record<string, string>;
+	setInputValues(data: Record<string, string>): void;
+	setError(data: {
+		field: string;
+		value: string;
+		validInformation: string;
+	}): void;
+	showInputError(field: string, errorMessage: string): void;
+	hideInputError(field: string): void;
+	close(): void;
+	get form(): HTMLElement;
+}
+
+export interface ICardProduct {
+	container: HTMLElement;
+	category: HTMLSpanElement;
+	title: HTMLHeadingElement;
+	img: HTMLImageElement;
+	price: HTMLSpanElement;
+}
+
+export interface IModalProduct extends IModal, ICardProduct {
+	basketButton: HTMLButtonElement;
 }
 
 export interface IFormOrder {
@@ -42,7 +72,23 @@ export interface IFormOrder {
 }
 
 export interface ISuccesOrder {
-	amount: number
+	amount: number | null;
+}
+
+export interface ISuccesOrderModal {
+	amount: HTMLSpanElement;
+}
+
+export interface ICatalogView {
+	catalogList: HTMLUListElement;
+}
+
+export interface IBasketView {
+	counter: HTMLSpanElement;
+	products: HTMLUListElement;
+	deleteProductButton: HTMLButtonElement;
+	amount: HTMLSpanElement;
+	buttonForOrder: HTMLButtonElement;
 }
 
 export interface IEventEmmitter {
