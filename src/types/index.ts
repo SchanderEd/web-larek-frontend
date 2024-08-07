@@ -10,9 +10,8 @@ export interface IProduct {
 }
 
 export interface ICatalog {
-	items: IProduct[];
-	setItems(items: IProduct[]): void;
-	getProduct(id: string): IProduct;
+  items?: IProduct[]
+  total?: number
 }
 
 export interface IBasket {
@@ -102,3 +101,6 @@ export interface IViewConstructor {
 export interface IView {
 	render(data?: object): HTMLElement;
 }
+
+
+/* /product/*/
