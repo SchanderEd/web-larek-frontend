@@ -1,15 +1,13 @@
 import './scss/styles.scss';
 import { EventEmitter, IEvents } from './components/base/events';
-import { IApi, IProduct } from './types';
+import { IApi } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
 import { AppApi } from './components/Api';
 import { Catalog } from './components/Catalog';
 import { Card } from './components/Card';
-import { CatalogContainer } from './components/CatalogContainer';
 import { cloneTemplate, ensureAllElements, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
-//import { CardModal } from './components/cardModal';
 
 const events = new EventEmitter();
 
@@ -17,7 +15,6 @@ const baseApi: IApi = new Api(API_URL, settings)
 const api = new AppApi(baseApi)
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
-//const catalogContainer = new CatalogContainer(document.querySelector('.gallery'))
 const catalogData = new Catalog(events)
 
 events.onAll((event) => {
