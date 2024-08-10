@@ -1,3 +1,4 @@
+import { ApiPostMethods } from '../components/base/api';
 import { IEvents } from '../components/base/events';
 
 export interface IProduct {
@@ -10,8 +11,14 @@ export interface IProduct {
 }
 
 export interface ICatalog {
-  items?: IProduct[]
-  total?: number
+	items: IProduct[]
+	total: number
+}
+
+export interface ICatalogData {
+	catalog: ICatalog
+	preview: string | null
+	events: IEvents
 }
 
 export interface IBasket {
@@ -23,11 +30,9 @@ export interface IBasket {
 
 export interface IModal {
 	modal: HTMLElement;
-	elForOpen: HTMLElement;
 	elForClose: HTMLButtonElement;
-	events: IEvents;
-	open(modal: HTMLElement): void;
-	close(modal: HTMLElement): void;
+	open(): void;
+	close(): void;
 }
 
 export interface IModalWithForm extends IModal {
@@ -52,6 +57,7 @@ export interface IModalWithForm extends IModal {
 }
 
 export interface ICardProduct {
+	id: string
 	container: HTMLElement;
 	category: HTMLSpanElement;
 	title: HTMLHeadingElement;
@@ -59,7 +65,8 @@ export interface ICardProduct {
 	price: HTMLSpanElement;
 }
 
-export interface IModalProduct extends IModal, ICardProduct {
+export interface IModalProduct extends IModal {
+	elForOpen: HTMLElement;
 	basketButton: HTMLButtonElement;
 }
 
@@ -95,12 +102,15 @@ export interface IEventEmmitter {
 }
 
 export interface IViewConstructor {
-	new (container: HTMLElement, events?: IEventEmmitter): IView;
+	new(container: HTMLElement, events?: IEventEmmitter): IView;
 }
 
 export interface IView {
 	render(data?: object): HTMLElement;
 }
 
-
-/* /product/*/
+export interface IApi {
+	baseUrl: string
+	get<T>(uri: string): Promise<T>
+	post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>
+}

@@ -1,8 +1,8 @@
-import { Api } from "../components/base/api";
-
 export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
 export const settings = {
-  api: new Api(`${API_URL}`)
+  headers: {
+    'Content-Type': 'application/json'
+  }
 };
