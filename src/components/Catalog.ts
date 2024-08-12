@@ -3,7 +3,6 @@ import { IEvents } from "./base/events";
 
 export class Catalog implements ICatalogData {
   _catalog: ICatalog
-  preview: string | null
   events: IEvents
 
   constructor(events: IEvents) {

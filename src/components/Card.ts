@@ -4,21 +4,23 @@ import { Component } from "./base/components";
 import { IEvents } from "./base/events";
 
 export class Card extends Component<IProduct>{
-  cardId: string
+  protected cardId: string
   protected events: IEvents
-
+ 
   protected card: HTMLElement
   protected galleryButton: HTMLElement
   protected cardTitle: HTMLHeadingElement
   protected cardCategory: HTMLElement
   protected cardImg: HTMLImageElement
   protected cardPrice: HTMLElement
-  protected cardBasketBtn: HTMLButtonElement
   protected cardDescription: HTMLElement
+  protected cartButton: HTMLButtonElement
+  protected deleteProductBtn: HTMLButtonElement
+  protected cardBasketBtn: HTMLButtonElement
 
   constructor(protected container: HTMLElement, events: IEvents) {
     super(container)
-    
+
     this.events = events
     this.card = this.container
     this.galleryButton = this.container
@@ -28,6 +30,7 @@ export class Card extends Component<IProduct>{
     this.cardPrice = this.container.querySelector('.card__price')
     this.cardBasketBtn = this.container.querySelector('.card__button')
     this.cardDescription = this.container.querySelector('.card__text')
+    this.deleteProductBtn = this.container.querySelector('.basket__item-delete')
 
     if (this.galleryButton.classList.contains('gallery__item')) {
       this.galleryButton.addEventListener('click', () => {
@@ -37,7 +40,7 @@ export class Card extends Component<IProduct>{
 
     if (this.cardBasketBtn) {
       this.cardBasketBtn.addEventListener('click', () => {
-        this.events.emit('card:basket', { id: this.id })
+        this.events.emit('card:basket', { id: this.id },)
       })
     }
   }

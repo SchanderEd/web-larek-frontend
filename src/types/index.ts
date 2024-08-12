@@ -17,15 +17,7 @@ export interface ICatalog {
 
 export interface ICatalogData {
 	catalog: ICatalog
-	preview: string | null
 	events: IEvents
-}
-
-export interface IBasket {
-	items: IProduct[] | undefined;
-	counter: number;
-	addProduct(id: string): void;
-	removeProduct(id: string): void;
 }
 
 export interface IModal {
