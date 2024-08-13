@@ -3,10 +3,15 @@ import { CDN_URL } from "../utils/constants";
 import { Component } from "./base/components";
 import { IEvents } from "./base/events";
 
-export class Card extends Component<IProduct>{
+interface ICardView extends IProduct {
+  indexCard: number
+}
+
+export class Card extends Component<ICardView>{
   protected cardId: string
   protected events: IEvents
  
+  protected _indexCard: HTMLElement;
   protected card: HTMLElement
   protected galleryButton: HTMLElement
   protected cardTitle: HTMLHeadingElement
@@ -24,6 +29,7 @@ export class Card extends Component<IProduct>{
     this.events = events
     this.card = this.container
     this.galleryButton = this.container
+    this._indexCard = this.container.querySelector('.basket__item-index');
     this.cardTitle = this.container.querySelector('.card__title')
     this.cardCategory = this.container.querySelector('.card__category')
     this.cardImg = this.container.querySelector('.card__image')
@@ -52,13 +58,14 @@ export class Card extends Component<IProduct>{
       this.cardPrice.textContent = String(price)
     }
   }
-
-  set altImg(alt: string) {
-    this.cardImg.alt = alt
-  }
+  
+  set indexCard(value: string) {
+		this._indexCard.textContent = value;
+	}
 
   set image(link: string) {
     this.cardImg.src = `${CDN_URL}${link}`
+    this.cardImg.alt = this.cardTitle.textContent
   }
 
   set category(category: string) {
@@ -74,6 +81,7 @@ export class Card extends Component<IProduct>{
   }
 
   set id(id: string) {
+    this.container.dataset.id = id
     this.cardId = id;
   }
 
