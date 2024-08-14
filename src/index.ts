@@ -108,19 +108,48 @@ events.on('card:basket', (data: Card) => {
   const productCard = basketItemCard.render({
     title: product.title,
     price: product.price,
-    indexCard: indexProduct
+    indexCard: indexProduct,
+    id: product.id
   })
-
+  // console.log(basketStore.products)
   basket.cartList.append(productCard)
-  events.emit('basket:updateCounter')
+  events.emit('basket:update')
   modal.close()
 })
 
-events.on('basket:updateCounter', () => {
+events.on('basket:delete product', (data: Card) => {
+  const product = findProduct(catalogData, data)
+  const indexProduct = basketStore.products.indexOf(product)
+
+  basketStore.products.splice(indexProduct, 1)
+  events.emit('basket:update', basket.cartList)
+
+  const item = basket.cartList.querySelector(`[data-id="${data.id}"]`)
+  item.remove()
+})
+
+events.on('basket:update', () => {
+  const items = basket.cartList.querySelectorAll(`[data-id]`)
+
+  items.forEach((item: HTMLElement) => {
+    const itemId = item.dataset.id
+    const product = basketStore.products.find((item) => item.id === itemId)
+    const indexItem = basketStore.products.indexOf(product) + 1
+
+    const indexEl = item.querySelector('.basket__item-index')
+    indexEl.textContent = String(indexItem)
+  })
+
   basket.counter = basketStore.products.length
   basket.products = basketStore.products
+  basket.total = basketStore.products.reduce((amount, product) => amount + product.price, 0)
+
+  if (basketStore.products.length === 0) {
+    basket.products = null
+  }
 })
 
 events.on('basket:open', () => {
+  console.log(basketStore.products)
   modal.render({ content: basket.render() })
 })

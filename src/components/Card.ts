@@ -36,7 +36,7 @@ export class Card extends Component<ICardView>{
     this.cardCategory = this.container.querySelector('.card__category')
     this.cardImg = this.container.querySelector('.card__image')
     this.cardPrice = this.container.querySelector('.card__price')
-    this.cardBasketBtn = this.container.querySelector('.card__button')
+    this.cardBasketBtn = this.container.querySelector('.card__button-basket')
     this.cardDescription = this.container.querySelector('.card__text')
     this.deleteProductBtn = this.container.querySelector('.basket__item-delete')
     this._isDisabledBasketBtn = isDisabledBtn
@@ -56,9 +56,15 @@ export class Card extends Component<ICardView>{
 
       this.cardBasketBtn.disabled = false
       this.cardBasketBtn.addEventListener('click', () => {
-        this.events.emit('card:basket', { id: this.id },)
+        this.events.emit('card:basket', { id: this.id })
       })
 
+    }
+
+    if (this.deleteProductBtn) {
+      this.deleteProductBtn.addEventListener('click', () => {
+        this.events.emit('basket:delete product', { id: this.id })
+      })
     }
   }
 

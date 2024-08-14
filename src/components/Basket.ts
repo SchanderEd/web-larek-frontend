@@ -18,11 +18,6 @@ export class BasketStore implements IBasketStore {
   }
 }
 
-interface IBasketView {
-  items: IProduct[]
-  total: number
-}
-
 export class Basket extends Component<IBasketStore>{
   protected _products: IProduct[] | null;
 
@@ -61,7 +56,7 @@ export class Basket extends Component<IBasketStore>{
       if (emptyMessage) {
         emptyMessage.remove()
       }
-      
+
     } else {
       this.orderBtn.disabled = true
       this.cartList.append(createElement<HTMLParagraphElement>('p', {
