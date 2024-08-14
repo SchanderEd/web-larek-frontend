@@ -5,12 +5,14 @@ import { IEvents } from "./base/events";
 
 interface ICardView extends IProduct {
   indexCard: number
+  isDisabledBasketBtn: boolean
 }
 
 export class Card extends Component<ICardView>{
   protected cardId: string
   protected events: IEvents
- 
+
+  protected _isDisabledBasketBtn: boolean
   protected _indexCard: HTMLElement;
   protected card: HTMLElement
   protected galleryButton: HTMLElement
@@ -23,7 +25,7 @@ export class Card extends Component<ICardView>{
   protected deleteProductBtn: HTMLButtonElement
   protected cardBasketBtn: HTMLButtonElement
 
-  constructor(protected container: HTMLElement, events: IEvents) {
+  constructor(protected container: HTMLElement, events: IEvents, isDisabledBtn?: boolean) {
     super(container)
 
     this.events = events
@@ -37,6 +39,7 @@ export class Card extends Component<ICardView>{
     this.cardBasketBtn = this.container.querySelector('.card__button')
     this.cardDescription = this.container.querySelector('.card__text')
     this.deleteProductBtn = this.container.querySelector('.basket__item-delete')
+    this._isDisabledBasketBtn = isDisabledBtn
 
     if (this.galleryButton.classList.contains('gallery__item')) {
       this.galleryButton.addEventListener('click', () => {
@@ -45,9 +48,17 @@ export class Card extends Component<ICardView>{
     }
 
     if (this.cardBasketBtn) {
+
+      if (this._isDisabledBasketBtn) {
+        this.cardBasketBtn.disabled = true
+        return
+      }
+
+      this.cardBasketBtn.disabled = false
       this.cardBasketBtn.addEventListener('click', () => {
         this.events.emit('card:basket', { id: this.id },)
       })
+
     }
   }
 
@@ -55,13 +66,13 @@ export class Card extends Component<ICardView>{
     if (price === null) {
       this.cardPrice.textContent = 'Бесценно'
     } else {
-      this.cardPrice.textContent = String(price)
+      this.cardPrice.textContent = `${String(price)} синапсов`
     }
   }
-  
+
   set indexCard(value: string) {
-		this._indexCard.textContent = value;
-	}
+    this._indexCard.textContent = value;
+  }
 
   set image(link: string) {
     this.cardImg.src = `${CDN_URL}${link}`

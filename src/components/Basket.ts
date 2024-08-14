@@ -61,6 +61,7 @@ export class Basket extends Component<IBasketStore>{
       if (emptyMessage) {
         emptyMessage.remove()
       }
+      
     } else {
       this.orderBtn.disabled = true
       this.cartList.append(createElement<HTMLParagraphElement>('p', {

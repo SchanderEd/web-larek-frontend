@@ -66,8 +66,14 @@ const findProduct = (catalogData: Catalog, dataProduct: Card) => {
 } // Нужно как-то перенести в утилитарную функцию
 
 events.on('card:select', (data: Card) => {
-  const card = new Card(cloneTemplate(cardModalTemplate), events)
   const product = findProduct(catalogData, data)
+  let basketButtonState = false
+
+  if (basketStore.products.some((item) => item.id === product.id)) {
+    basketButtonState = true
+  }
+
+  const card = new Card(cloneTemplate(cardModalTemplate), events, basketButtonState)
 
   modal.render({
     content: card.render({
@@ -76,7 +82,7 @@ events.on('card:select', (data: Card) => {
       description: product.description,
       category: product.category,
       price: product.price,
-      id: product.id,
+      id: product.id
     })
   });
 
@@ -112,16 +118,9 @@ events.on('card:basket', (data: Card) => {
 
 events.on('basket:updateCounter', () => {
   basket.counter = basketStore.products.length
-
   basket.products = basketStore.products
-  
-  if(basketStore.products.length) {
- //   console.log(basketStore.products.length)
- //   basket.activeOrderBtn = true
-  }
 })
 
 events.on('basket:open', () => {
   modal.render({ content: basket.render() })
-
 })
