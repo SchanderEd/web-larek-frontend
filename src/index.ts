@@ -1,6 +1,6 @@
 import './scss/styles.scss';
-import { EventEmitter, IEvents } from './components/base/events';
-import { IApi, ICatalog, IProduct } from './types';
+import { EventEmitter } from './components/base/events';
+import { IApi } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
 import { AppApi } from './components/Api';
@@ -65,6 +65,8 @@ const findProduct = (catalogData: Catalog, dataProduct: Card) => {
   return product
 } // Нужно как-то перенести в утилитарную функцию
 
+/* Открытие карточки товара */
+
 events.on('card:select', (data: Card) => {
   const product = findProduct(catalogData, data)
   let basketButtonState = false
@@ -93,6 +95,8 @@ events.on('modal:close', () => {
   page.classList.remove('page__locked')
 })
 
+/* Добавление в корзину */
+
 events.on('card:basket', (data: Card) => {
   const product = findProduct(catalogData, data)
 
@@ -100,8 +104,6 @@ events.on('card:basket', (data: Card) => {
   const indexProduct = basketStore.products.indexOf(product) + 1
 
   basket.total = basketStore.products.reduce((amount, product) => amount + product.price, 0)
-
-  console.log(basketStore)
 
   const basketItemCard = new Card(cloneTemplate(cartItemTemplate), events)
 
@@ -111,11 +113,13 @@ events.on('card:basket', (data: Card) => {
     indexCard: indexProduct,
     id: product.id
   })
-  // console.log(basketStore.products)
+
   basket.cartList.append(productCard)
   events.emit('basket:update')
   modal.close()
 })
+
+/* Удаление товара из корзины */
 
 events.on('basket:delete product', (data: Card) => {
   const product = findProduct(catalogData, data)
@@ -127,6 +131,8 @@ events.on('basket:delete product', (data: Card) => {
   const item = basket.cartList.querySelector(`[data-id="${data.id}"]`)
   item.remove()
 })
+
+/* Обновление корзины */
 
 events.on('basket:update', () => {
   const items = basket.cartList.querySelectorAll(`[data-id]`)
@@ -148,6 +154,8 @@ events.on('basket:update', () => {
     basket.products = null
   }
 })
+
+/* Открытие корзины */
 
 events.on('basket:open', () => {
   console.log(basketStore.products)
