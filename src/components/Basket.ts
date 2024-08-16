@@ -39,6 +39,10 @@ export class Basket extends Component<IBasketStore>{
     this.cartButton.addEventListener('click', () => {
       events.emit('basket:open')
     })
+
+    this.orderBtn.addEventListener('click', () => {
+      events.emit('form:order')
+    })
   }
 
   set total(total: number) {

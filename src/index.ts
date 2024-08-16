@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 import { EventEmitter } from './components/base/events';
-import { IApi } from './types';
+import { IApi, IFormOrder } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
 import { AppApi } from './components/Api';
@@ -9,12 +9,15 @@ import { Card } from './components/Card';
 import { cloneTemplate, ensureAllElements, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
 import { Basket, BasketStore } from './components/Basket';
+import { Form, FormContacts, FormOrder } from './components/Form';
 
 /* Темплейты */
 const cardTemplate: HTMLTemplateElement = document.querySelector('#card-catalog')
 const cardModalTemplate: HTMLTemplateElement = document.querySelector('#card-preview')
 const cartTemplate: HTMLTemplateElement = document.querySelector('#basket')
 const cartItemTemplate: HTMLTemplateElement = document.querySelector('#card-basket')
+const orderTemplate: HTMLTemplateElement = document.querySelector('#order');
+const contactsTemaplate: HTMLTemplateElement = document.querySelector('#contacts')
 
 const events = new EventEmitter();
 const basketStore = new BasketStore([], null)
@@ -23,8 +26,21 @@ const api = new AppApi(baseApi)
 const catalogData = new Catalog(events)
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+
 const basket = new Basket(cloneTemplate(cartTemplate), events);
 basket.products = null
+
+const formOrder = new FormOrder(cloneTemplate(orderTemplate), events)
+const formContacts = new FormContacts(cloneTemplate(contactsTemaplate), events)
+
+const orderData: IFormOrder = {
+  paymentMethod: '',
+  address: '',
+  email: '',
+  phone: ''
+}
+
+console.log(orderData)
 
 const gallery = document.querySelector('.gallery')
 const page = document.querySelector('.page')
@@ -68,7 +84,7 @@ const findProduct = (catalogData: Catalog, dataProduct: Card) => {
 /* Открытие карточки товара */
 
 events.on('card:select', (data: Card) => {
-  const product = findProduct(catalogData, data)
+  const product = catalogData.catalog.items.find((item) => item.id === data.id)
   let basketButtonState = false
 
   if (basketStore.products.some((item) => item.id === product.id)) {
@@ -98,7 +114,7 @@ events.on('modal:close', () => {
 /* Добавление в корзину */
 
 events.on('card:basket', (data: Card) => {
-  const product = findProduct(catalogData, data)
+  const product = catalogData.catalog.items.find((item) => item.id === data.id)
 
   basketStore.products.push(product)
   const indexProduct = basketStore.products.indexOf(product) + 1
@@ -122,7 +138,7 @@ events.on('card:basket', (data: Card) => {
 /* Удаление товара из корзины */
 
 events.on('basket:delete product', (data: Card) => {
-  const product = findProduct(catalogData, data)
+  const product = catalogData.catalog.items.find((item) => item.id === data.id)
   const indexProduct = basketStore.products.indexOf(product)
 
   basketStore.products.splice(indexProduct, 1)
@@ -158,6 +174,41 @@ events.on('basket:update', () => {
 /* Открытие корзины */
 
 events.on('basket:open', () => {
-  console.log(basketStore.products)
   modal.render({ content: basket.render() })
+})
+
+/* Формы */
+
+events.on('form:order', () => {
+  modal.render({ content: formOrder.render() })
+})
+
+events.on('form:submit', () => {
+  modal.render({ content: formContacts.render() })
+})
+
+events.on('form:payment', (event: FormOrder) => {
+  orderData.paymentMethod = event.paymentMethod
+  formOrder.paymentMethod = orderData.paymentMethod
+  formOrder.validate()
+})
+
+events.on('form:input', (event: HTMLInputElement) => {
+  switch (event.name) {
+    case 'address':
+      orderData.address = event.value
+      formOrder.address = orderData.address
+      formOrder.validate()
+      return
+    case 'email':
+      orderData.email = event.value
+      formContacts.email = orderData.email
+      formContacts.validate()
+      return
+    case 'phone':
+      orderData.phone = event.value
+      formContacts.phone = orderData.phone
+      formContacts.validate()
+      return
+  }
 })
