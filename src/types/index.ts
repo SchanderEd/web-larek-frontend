@@ -11,13 +11,13 @@ export interface IProduct {
 }
 
 export interface ICatalog {
-	items: IProduct[]
-	total: number
+	items: IProduct[];
+	total: number;
 }
 
 export interface ICatalogData {
-	catalog: ICatalog
-	events: IEvents
+	catalog: ICatalog;
+	events: IEvents;
 }
 
 export interface IFormOrder {
@@ -36,16 +36,16 @@ export interface ICatalogView {
 }
 
 export interface IApi {
-	baseUrl: string
-	get<T>(uri: string): Promise<T>
-	post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>
+	baseUrl: string;
+	get<T>(uri: string): Promise<T>;
+	post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
 export interface IOrder {
-  items: string[]
-  payment: string,
-  address: string,
-  email: string,
-  phone: string,
-  total: number
+	items: string[];
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	total: number;
 }

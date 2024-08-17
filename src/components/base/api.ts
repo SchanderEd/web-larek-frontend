@@ -1,4 +1,4 @@
-import { IApi } from "../../types";
+import { IApi } from '../../types';
 
 export type ApiListResponse<Type> = {
 	total: number;
