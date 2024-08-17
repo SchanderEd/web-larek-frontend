@@ -12,7 +12,6 @@ export class Catalog implements ICatalogData {
 
   set products(catalog: ICatalog) {
     this._catalog = catalog;
-    this.events.emit('products:changed');
   }
 
   get catalog(): ICatalog {

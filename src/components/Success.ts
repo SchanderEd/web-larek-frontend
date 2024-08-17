@@ -1,17 +1,26 @@
 import { ISuccesOrder } from '../types';
 import { Component } from './base/components';
+import { IEvents } from './base/events';
 
 export class Success extends Component<ISuccesOrder> {
-	_amount: number;
-	amountEl: HTMLSpanElement;
+	protected _amount: number;
+	protected _amountEl: HTMLSpanElement;
+	protected _succesCloseBtn: HTMLButtonElement
+	events: IEvents
 
-	constructor(protected container: HTMLElement) {
+	constructor(protected container: HTMLElement, events: IEvents) {
 		super(container);
 
-		this.amountEl = container.querySelector('.order-success__description');
+		this.events = events
+		this._amountEl = container.querySelector('.order-success__description');
+		this._succesCloseBtn = container.querySelector('.order-success__close')
+
+		this._succesCloseBtn.addEventListener('click', () => {
+			this.events.emit('success:close')
+		})
 	}
 
 	set amount(amount: number) {
-		this.amountEl.textContent = `Списано ${String(amount)} синапсов`;
+		this._amountEl.textContent = `Списано ${String(amount)} синапсов`;
 	}
 }

@@ -62,6 +62,7 @@ export class Card extends Component<ICardView> {
 			this.cardBasketBtn.disabled = false;
 			this.cardBasketBtn.addEventListener('click', () => {
 				this.events.emit('card:basket', { id: this.id });
+				events.emit('modal:close')
 			});
 		}
 

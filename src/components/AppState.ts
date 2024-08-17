@@ -1,10 +1,4 @@
-import { IFormOrder, IProduct } from '../types';
-import { IBasket } from './Basket';
-
-export interface IAppState {
-	basket: IBasket;
-	orderData: IFormOrder;
-}
+import { IAppState, IBasket, IFormOrder, IProduct } from '../types';
 
 export class AppState implements IAppState {
 	protected _basket: IBasket;
@@ -38,7 +32,7 @@ export class AppState implements IAppState {
 			if (item.price === null) {
 				return
 			}
-			
+
 			itemsId.push(item.id);
 		});
 

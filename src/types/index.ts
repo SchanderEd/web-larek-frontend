@@ -20,6 +20,15 @@ export interface ICatalogData {
 	events: IEvents;
 }
 
+export interface IAppState {
+	basket: IBasket;
+	orderData: IFormOrder;
+}
+
+export interface IBasket {
+  products: IProduct[];
+}
+
 export interface IFormOrder {
 	paymentMethod: string;
 	address: string;
@@ -29,10 +38,6 @@ export interface IFormOrder {
 
 export interface ISuccesOrder {
 	amount: number | null;
-}
-
-export interface ICatalogView {
-	catalogList: HTMLUListElement;
 }
 
 export interface IApi {

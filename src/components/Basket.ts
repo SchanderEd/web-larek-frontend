@@ -1,11 +1,7 @@
-import { IProduct } from '../types';
+import { IBasket, IProduct } from '../types';
 import { createElement } from '../utils/utils';
 import { Component } from './base/components';
 import { IEvents } from './base/events';
-
-export interface IBasket {
-  products: IProduct[];
-}
 
 export class Basket extends Component<IBasket> {
   protected _products: IProduct[] | null;

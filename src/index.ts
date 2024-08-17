@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 import { EventEmitter } from './components/base/events';
-import { IApi, IOrder } from './types';
+import { IApi, IAppState, IOrder } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
 import { AppApi } from './components/Api';
@@ -12,7 +12,7 @@ import { Basket } from './components/Basket';
 import { FormContacts } from './components/FormContacts';
 import { FormOrder } from './components/FormOrder';
 import { Success } from './components/Success';
-import { AppState, IAppState } from './components/AppState';
+import { AppState } from './components/AppState';
 
 /* Темплейты */
 const cardTemplate: HTMLTemplateElement =
@@ -113,7 +113,7 @@ events.on('card:select', (data: Card) => {
 		}),
 	});
 
-  events.emit('modal:open')
+	events.emit('modal:open')
 });
 
 events.on('modal:open', () => {
@@ -142,10 +142,9 @@ events.on('card:basket', (data: Card) => {
 		id: product.id,
 	});
 
-  basket.renderItem(productCard)
+	basket.renderItem(productCard)
 	events.emit('basket:update');
-	modal.close();
-	console.log(appState);
+	modal.close()
 });
 
 /* Удаление товара из корзины */
@@ -157,9 +156,8 @@ events.on('basket:delete product', (card: Card) => {
 	const indexProduct = appState.getBasket.products.indexOf(product);
 
 	appState.removeProduct(indexProduct);
-  basket.removeItem(card.id)
-  events.emit('basket:update', basket.list);
-	console.log(appState);
+	basket.removeItem(card.id)
+	events.emit('basket:update', basket.list);
 });
 
 /* Обновление корзины */
@@ -179,12 +177,11 @@ events.on('basket:update', () => {
 events.on('basket:clear', () => {
 	basket.clear();
 });
-console.log(appState);
 /* Открытие корзины */
 
 events.on('basket:open', () => {
 	modal.render({ content: basket.render() });
-  events.emit('modal:open')
+	events.emit('modal:open')
 });
 
 /* Формы */
@@ -233,16 +230,18 @@ events.on('form:complete', () => {
 		total: appState.getTotalBasket(appState.getBasket.products),
 	};
 
-  console.log(order)
+	events.on('success:close', () => {
+		modal.close()
+	})
 
 	api
 		.placeOrder(order)
 		.then((res) => {
-			const success = new Success(cloneTemplate(successTemplate));
+			const success = new Success(cloneTemplate(successTemplate), events);
 			modal.render({ content: success.render() });
 			success.amount = res.total;
 			appState.clear();
-      events.emit('basket:clear');
+			events.emit('basket:clear');
 		})
 		.catch((err) => {
 			console.log(err);
