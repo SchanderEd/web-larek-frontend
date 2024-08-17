@@ -35,6 +35,10 @@ export class AppState implements IAppState {
 		const itemsId: string[] = [];
 
 		products.map((item) => {
+			if (item.price === null) {
+				return
+			}
+			
 			itemsId.push(item.id);
 		});
 

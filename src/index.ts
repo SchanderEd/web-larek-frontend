@@ -56,10 +56,6 @@ const formContacts = new FormContacts(cloneTemplate(contactsTemaplate), events);
 const gallery = document.querySelector('.gallery');
 const page = document.querySelector('.page');
 
-/*events.onAll((event) => {
-  console.log(event.eventName, event.data)
-})*/
-
 /* Получение каталога */
 
 Promise.all([api.getCatalog()])
@@ -93,8 +89,9 @@ events.on('catalog:loaded', () => {
 /* Открытие карточки товара */
 
 events.on('card:select', (data: Card) => {
-	const product = catalogData.catalog.items.find((item) => item.id === data.id);
+	const product = catalogData.findProduct(data)
 	let basketButtonState = false;
+
 	if (appState.getBasket.products.some((item) => item.id === product.id)) {
 		basketButtonState = true;
 	}
@@ -116,8 +113,12 @@ events.on('card:select', (data: Card) => {
 		}),
 	});
 
-	page.classList.add('page__locked');
+  events.emit('modal:open')
 });
+
+events.on('modal:open', () => {
+	page.classList.add('page__locked');
+})
 
 events.on('modal:close', () => {
 	page.classList.remove('page__locked');
@@ -126,11 +127,9 @@ events.on('modal:close', () => {
 /* Добавление в корзину */
 
 events.on('card:basket', (data: Card) => {
-	const product = catalogData.catalog.items.find((item) => item.id === data.id);
+	const product = catalogData.findProduct(data)
 
 	appState.addProduct(product);
-
-	const indexProduct = appState.getBasket.products.indexOf(product) + 1;
 
 	basket.total = appState.getTotalBasket(appState.getBasket.products);
 
@@ -139,7 +138,7 @@ events.on('card:basket', (data: Card) => {
 	const productCard = basketItemCard.render({
 		title: product.title,
 		price: product.price,
-		indexCard: indexProduct,
+		indexCard: basket.getIndexElement(appState.getBasket.products, product),
 		id: product.id,
 	});
 
@@ -151,17 +150,15 @@ events.on('card:basket', (data: Card) => {
 
 /* Удаление товара из корзины */
 
-events.on('basket:delete product', (data: Card) => {
+events.on('basket:delete product', (card: Card) => {
 	const product = appState.getBasket.products.find(
-		(item) => item.id === data.id
+		(item) => item.id === card.id
 	);
 	const indexProduct = appState.getBasket.products.indexOf(product);
 
 	appState.removeProduct(indexProduct);
-	events.emit('basket:update', basket.list);
-
-	const item = basket.list.querySelector(`[data-id="${data.id}"]`);
-	item.remove();
+  basket.removeItem(card.id)
+  events.emit('basket:update', basket.list);
 	console.log(appState);
 });
 
@@ -187,6 +184,7 @@ console.log(appState);
 
 events.on('basket:open', () => {
 	modal.render({ content: basket.render() });
+  events.emit('modal:open')
 });
 
 /* Формы */
@@ -235,6 +233,8 @@ events.on('form:complete', () => {
 		total: appState.getTotalBasket(appState.getBasket.products),
 	};
 
+  console.log(order)
+
 	api
 		.placeOrder(order)
 		.then((res) => {
@@ -242,10 +242,9 @@ events.on('form:complete', () => {
 			modal.render({ content: success.render() });
 			success.amount = res.total;
 			appState.clear();
+      events.emit('basket:clear');
 		})
 		.catch((err) => {
 			console.log(err);
 		});
-
-	events.emit('basket:clear');
 });
