@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 import { EventEmitter } from './components/base/events';
-import { IApi, IFormOrder } from './types';
+import { IApi, IOrder, IProduct } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
 import { AppApi } from './components/Api';
@@ -122,7 +122,7 @@ events.on('card:basket', (data: Card) => {
 
   const indexProduct = appState.getBasket.products.indexOf(product) + 1
 
-  basket.total = appState.getBasket.products.reduce((amount, product) => amount + product.price, 0)
+  basket.total = appState.getTotalBasket(appState.getBasket.products)
 
   const basketItemCard = new Card(cloneTemplate(cartItemTemplate), events)
 
@@ -160,7 +160,7 @@ events.on('basket:update', () => {
 
   basket.counter = appState.getBasket.products.length
   basket.products = appState.getBasket.products
-  basket.total = appState.getBasket.products.reduce((amount, product) => amount + product.price, 0)
+  basket.total = appState.getTotalBasket(appState.getBasket.products)
 
   if (appState.getBasket.products.length === 0) {
     basket.products = null
@@ -214,12 +214,24 @@ events.on('form:input', (event: HTMLInputElement) => {
 })
 
 events.on('form:complete', () => {
-  const success = new Success(cloneTemplate(successTemplate), events)
+  const order: IOrder = {
+    items: appState.getIdItems(appState.getBasket.products),
+    payment: appState.getOrderData.paymentMethod,
+    email: appState.getOrderData.email,
+    phone: appState.getOrderData.phone,
+    address: appState.getOrderData.address,
+    total: appState.getTotalBasket(appState.getBasket.products)
+  }
 
-  success.amount = appState.getBasket.products.reduce((amount, product) => amount + product.price, 0)
+  api.placeOrder(order).then((res) => {
+    const success = new Success(cloneTemplate(successTemplate), events)
+    modal.render({ content: success.render() })
+    success.amount = res.total
+    appState.clear()
+  }).catch((err) => {
+    console.log(err)
+  })
 
-  modal.render({ content: success.render() })
-  console.log(appState)
- // appState.clear()
   events.emit('basket:clear')
 })
+

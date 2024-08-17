@@ -31,6 +31,20 @@ export class AppState implements IAppState {
     return this._orderData
   }
 
+  getIdItems(products: IProduct[]): string[] {
+    const itemsId: string[] = []
+
+    products.map((item) => {
+      itemsId.push(item.id)
+    })
+
+    return itemsId
+  }
+
+  getTotalBasket(products: IProduct[]): number {
+    return products.reduce((amount, product) => amount + product.price, 0)
+  }
+
   addProduct(product: IProduct) {
     this._basket.products.push(product)
   }
@@ -41,9 +55,5 @@ export class AppState implements IAppState {
 
   clear() {
     this._basket.products.splice(0, this._basket.products.length)
-    this._orderData.address = ''
-    this._orderData.email = ''
-    this._orderData.paymentMethod = ''
-    this._orderData.phone = ''
   }
 }
