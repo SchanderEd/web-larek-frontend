@@ -1,21 +1,21 @@
 import { IFormOrder, IProduct } from "../types";
-import { IBasketStore } from "./Basket";
+import { IBasket } from "./Basket";
 
 export interface IAppState {
-  basket: IBasketStore,
+  basket: IBasket,
   orderData: IFormOrder
 }
 
 export class AppState implements IAppState {
-  protected _basket: IBasketStore;
+  protected _basket: IBasket;
   protected _orderData: IFormOrder;
 
-  constructor(basket: IBasketStore, orderData: IFormOrder) {
+  constructor(basket: IBasket, orderData: IFormOrder) {
     this._basket = basket
     this._orderData = orderData
   }
 
-  set basket(basket: IBasketStore) {
+  set basket(basket: IBasket) {
     this._basket = basket
   }
 
@@ -31,7 +31,19 @@ export class AppState implements IAppState {
     return this._orderData
   }
 
+  addProduct(product: IProduct) {
+    this._basket.products.push(product)
+  }
+
+  removeProduct(indexProduct: number) {
+    this._basket.products.splice(indexProduct, 1)
+  }
+
   clear() {
     this._basket.products.splice(0, this._basket.products.length)
+    this._orderData.address = ''
+    this._orderData.email = ''
+    this._orderData.paymentMethod = ''
+    this._orderData.phone = ''
   }
 }

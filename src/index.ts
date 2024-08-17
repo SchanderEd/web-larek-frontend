@@ -8,7 +8,7 @@ import { Catalog } from './components/Catalog';
 import { Card } from './components/Card';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
-import { Basket, IBasketStore } from './components/Basket';
+import { Basket, IBasket } from './components/Basket';
 import { FormContacts } from './components/FormContacts';
 import { FormOrder } from './components/FormOrder';
 import { Success } from './components/Success';
@@ -48,15 +48,6 @@ const basket = new Basket(cloneTemplate(cartTemplate), events);
 
 const formOrder = new FormOrder(cloneTemplate(orderTemplate), events)
 const formContacts = new FormContacts(cloneTemplate(contactsTemaplate), events)
-
-const orderData: IFormOrder = { // В AppState
-  paymentMethod: '',
-  address: '',
-  email: '',
-  phone: ''
-}
-
-console.log(orderData)
 
 const gallery = document.querySelector('.gallery')
 const page = document.querySelector('.page')
@@ -127,7 +118,8 @@ events.on('modal:close', () => {
 events.on('card:basket', (data: Card) => {
   const product = catalogData.catalog.items.find((item) => item.id === data.id)
 
-  appState.getBasket.products.push(product)
+  appState.addProduct(product)
+
   const indexProduct = appState.getBasket.products.indexOf(product) + 1
 
   basket.total = appState.getBasket.products.reduce((amount, product) => amount + product.price, 0)
@@ -144,6 +136,7 @@ events.on('card:basket', (data: Card) => {
   basket.list.append(productCard)
   events.emit('basket:update')
   modal.close()
+  console.log(appState)
 })
 
 /* Удаление товара из корзины */
@@ -152,11 +145,12 @@ events.on('basket:delete product', (data: Card) => {
   const product = appState.getBasket.products.find((item) => item.id === data.id)
   const indexProduct = appState.getBasket.products.indexOf(product)
 
-  appState.getBasket.products.splice(indexProduct, 1)
+  appState.removeProduct(indexProduct)
   events.emit('basket:update', basket.list)
 
   const item = basket.list.querySelector(`[data-id="${data.id}"]`)
   item.remove()
+  console.log(appState)
 })
 
 /* Обновление корзины */
@@ -176,7 +170,7 @@ events.on('basket:update', () => {
 events.on('basket:clear', () => {
   basket.clear()
 })
-
+console.log(appState)
 /* Открытие корзины */
 
 events.on('basket:open', () => {
@@ -194,26 +188,26 @@ events.on('form:submit', () => {
 })
 
 events.on('form:payment', (event: FormOrder) => {
-  orderData.paymentMethod = event.paymentMethod
-  formOrder.paymentMethod = orderData.paymentMethod
+  appState.getOrderData.paymentMethod = event.paymentMethod
+  formOrder.paymentMethod = appState.getOrderData.paymentMethod
   formOrder.validate()
 })
 
 events.on('form:input', (event: HTMLInputElement) => {
   switch (event.name) {
     case 'address':
-      orderData.address = event.value
-      formOrder.address = orderData.address
+      appState.getOrderData.address = event.value
+      formOrder.address = appState.getOrderData.address
       formOrder.validate()
       return
     case 'email':
-      orderData.email = event.value
-      formContacts.email = orderData.email
+      appState.getOrderData.email = event.value
+      formContacts.email = appState.getOrderData.email
       formContacts.validate()
       return
     case 'phone':
-      orderData.phone = event.value
-      formContacts.phone = orderData.phone
+      appState.getOrderData.phone = event.value
+      formContacts.phone = appState.getOrderData.phone
       formContacts.validate()
       return
   }
@@ -225,8 +219,7 @@ events.on('form:complete', () => {
   success.amount = appState.getBasket.products.reduce((amount, product) => amount + product.price, 0)
 
   modal.render({ content: success.render() })
-
-  appState.clear()
+  console.log(appState)
+ // appState.clear()
   events.emit('basket:clear')
-  console.log(appState.getBasket)
 })

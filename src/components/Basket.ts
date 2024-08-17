@@ -3,11 +3,11 @@ import { createElement } from "../utils/utils";
 import { Component } from "./base/components";
 import { IEvents } from "./base/events";
 
-export interface IBasketStore {
+export interface IBasket {
   products: IProduct[]
 }
 
-export class Basket extends Component<IBasketStore>{
+export class Basket extends Component<IBasket>{
   protected _products: IProduct[] | null;
 
   protected _cartButton: HTMLButtonElement
