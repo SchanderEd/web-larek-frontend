@@ -3,73 +3,94 @@ import { createElement } from "../utils/utils";
 import { Component } from "./base/components";
 import { IEvents } from "./base/events";
 
-interface IBasketStore {
-  products: IProduct[] | null
-  total: number
-}
-
-export class BasketStore implements IBasketStore {
-  products;
-  total;
-
-  constructor(products: IProduct[] | undefined, total: number) {
-    this.products = products
-    this.total = total
-  }
+export interface IBasketStore {
+  products: IProduct[]
 }
 
 export class Basket extends Component<IBasketStore>{
   protected _products: IProduct[] | null;
 
-  protected cartButton: HTMLButtonElement
-  cartList: HTMLUListElement
-  protected cartCounter: HTMLSpanElement
-  protected orderBtn: HTMLButtonElement
-  protected cartAmount: HTMLSpanElement
+  protected _cartButton: HTMLButtonElement
+  protected _cartList: HTMLUListElement
+  protected _cartCounter: HTMLSpanElement
+  protected _orderBtn: HTMLButtonElement
+  protected _cartAmount: HTMLSpanElement
+  protected _cartItems: NodeList
 
   constructor(protected container: HTMLElement, protected events: IEvents) {
     super(container)
 
-    this.cartButton = document.querySelector('.header__basket')
-    this.cartCounter = document.querySelector('.header__basket-counter')
-    this.cartList = this.container.querySelector('.basket__list')
-    this.cartAmount = this.container.querySelector('.basket__price')
-    this.orderBtn = this.container.querySelector('.basket__button')
+    this._cartButton = document.querySelector('.header__basket')
+    this._cartCounter = document.querySelector('.header__basket-counter')
+    this._cartList = this.container.querySelector('.basket__list')
+    this._cartAmount = this.container.querySelector('.basket__price')
+    this._orderBtn = this.container.querySelector('.basket__button')
 
-    this.cartButton.addEventListener('click', () => {
+    this._cartButton.addEventListener('click', () => {
       events.emit('basket:open')
     })
 
-    this.orderBtn.addEventListener('click', () => {
+    this._orderBtn.addEventListener('click', () => {
       events.emit('form:order')
     })
   }
 
+  get getItems() {
+    return this._cartList.querySelectorAll(`[data-id]`)
+  }
+
+  get list() {
+    return this._cartList
+  }
+
   set total(total: number) {
-    this.cartAmount.textContent = `${String(total)} синапсов`
+    this._cartAmount.textContent = `${String(total)} синапсов`
   }
 
   set products(products: IProduct[]) {
     this._products = products
 
     if (products) {
-      this.orderBtn.disabled = false
+      this._orderBtn.disabled = false
 
-      const emptyMessage = this.cartList.querySelector('.empty__basket')
+      const emptyMessage = this._cartList.querySelector('.empty__basket')
 
       if (emptyMessage) {
         emptyMessage.remove()
       }
 
     } else {
-      this.orderBtn.disabled = true
-      this.cartList.append(createElement<HTMLParagraphElement>('p', {
+      this._orderBtn.disabled = true
+      this._cartList.append(createElement<HTMLParagraphElement>('p', {
         textContent: 'Корзина пуста', className: 'empty__basket'
       }));
     }
   }
 
   set counter(counter: number) {
-    this.cartCounter.textContent = String(counter)
+    this._cartCounter.textContent = String(counter)
+  }
+
+  updateIndexElements(items: NodeList, products: IProduct[]) {
+    items.forEach((item: HTMLElement) => {
+      const itemId = item.dataset.id
+      const product = products.find((item) => item.id === itemId)
+      const indexItem = products.indexOf(product) + 1
+
+      const indexEl = item.querySelector('.basket__item-index')
+      indexEl.textContent = String(indexItem)
+    })
+  }
+
+  clear() {
+    const items = this._cartList.querySelectorAll(`[data-id]`)
+
+    items.forEach((item) => {
+      item.remove()
+    })
+
+    this.counter =  0
+    this.total = 0
+    this.products = null
   }
 }
