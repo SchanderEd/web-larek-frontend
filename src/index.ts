@@ -9,7 +9,8 @@ import { Card } from './components/Card';
 import { cloneTemplate, ensureAllElements, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
 import { Basket, BasketStore } from './components/Basket';
-import { Form, FormContacts, FormOrder } from './components/Form';
+import { FormContacts } from './components/FormContacts';
+import { FormOrder } from './components/FormOrder';
 
 /* Темплейты */
 const cardTemplate: HTMLTemplateElement = document.querySelector('#card-catalog')
