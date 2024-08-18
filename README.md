@@ -88,8 +88,8 @@ yarn build
 
 Поля:
 
-- `items?: IProduct[]` - параметр принимающий массив из товаров.
-- `total?: number` - свойства отвечающее за количество товаров в каталоге
+- `items: IProduct[]` - параметр принимающий массив из товаров.
+- `total: number` - свойства отвечающее за количество товаров в каталоге
 
 ---
 
@@ -131,28 +131,6 @@ yarn build
 
 ## Классы свойства View. Слой отображения
 
-
-### ViewConstructor
-
-Конструктор HTML элемента. В данный класс передаётся HTML элемент и список событий этого элемента для последующего рендера.
-
-Поля:
-
-- `container: HTMLElement` - HTML элемент для конструктора.
-- `events?: IEventEmmitter` - список событий для указанного HTML элемента.
-
----
-
-### IView
-
-Класс, содержащий в себе метод рендера HTML элемента:
-
-Методы:
-
-- `render(data?: object)` - рендерит HTML элемент на странице с переданной data в виде объекта
-
----
-
 ### ICardProduct
 
 Класс реализует карточку товара на странице.
@@ -178,32 +156,6 @@ yarn build
 
 - `open(modal: HTMLElement)` - открывает указанное модальное окно.
 - `close(modal: HTMLElement)` - закрывает указанное модальное окно.
-
----
-
-### Класс IModalWithForm.
-
-Расширяет класс IModal. Предназначен для окна с формой.
-
-Поля класса:
-
-- `submitButton: HTMLButtonElement;` - кнопка для отправки формы
-- `_form: HTMLFormElement;` - форма
-- `formName: string;` - имя формы
-- `inputs: NodeListOf<HTMLInputElement>` - все инпуты формы
-- `handleSubmit: Function;` - функция для отправки формы
-- `errors: Record<string, HTMLElement>` - объект для хранения ошибок и их вывода под полями формы
-
-Методы:
-
-- `setValid(isValid: boolean): void` - отвечает за активность кнопки отправки формы
-- `getInputValues(): Record<string, string>` - возвращает объект с данными из полей формы
-- `setInputValues(data: Record<string, string>): void` - принимает объект с данными для заполнения полей формы
-- `setError(data: { field: string, value: string, validInformation: string }): void` - принимает объект с данными для отображения или сокрытия ошибок под полями ввода
-- `showInputError (field: string, errorMessage: string): void` - отображает ошибки под полями ввода
-- `hideInputError (field: string): void` - удаляет ошибки из под полей ввода
-- `close (): void` - расширяет метод класса Modal, дополнительно очищает поля формы при закрытии и деактивирует кнопку отправки формы
-- `get form(): HTMLElement` - геттер для получения элемента формы
 
 ---
 

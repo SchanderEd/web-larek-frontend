@@ -76,9 +76,15 @@ export class Card extends Component<ICardView> {
 	set price(price: number) {
 		if (price === null) {
 			this.cardPrice.textContent = 'Бесценно';
-		} else {
-			this.cardPrice.textContent = `${String(price)} синапсов`;
+
+			if (this.cardBasketBtn) {
+				this.cardBasketBtn.disabled = true
+			}
+
+			return
 		}
+
+		this.cardPrice.textContent = `${String(price)} синапсов`;
 	}
 
 	set indexCard(value: string) {
