@@ -37,7 +37,7 @@ export interface IFormOrder {
 }
 
 export interface ISuccesOrder {
-	amount: number | null;
+	amount: number;
 }
 
 export interface IApi {

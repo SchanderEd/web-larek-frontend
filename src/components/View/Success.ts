@@ -1,9 +1,8 @@
-import { ISuccesOrder } from '../types';
-import { Component } from './base/components';
-import { IEvents } from './base/events';
+import { ISuccesOrder } from '../../types';
+import { Component } from '../base/components';
+import { IEvents } from '../base/events';
 
 export class Success extends Component<ISuccesOrder> {
-	protected _amount: number;
 	protected _amountEl: HTMLSpanElement;
 	protected _succesCloseBtn: HTMLButtonElement
 	events: IEvents

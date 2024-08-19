@@ -1,5 +1,5 @@
-import { Form } from './common/Form';
-import { IEvents } from './base/events';
+import { Form } from '../common/Form';
+import { IEvents } from '../base/events';
 
 export class FormOrder extends Form {
 	protected _paymentsButtons: NodeList;

@@ -1,5 +1,5 @@
-import { ICatalog, ICatalogData, IProduct } from '../types';
-import { IEvents } from './base/events';
+import { ICatalog, ICatalogData, IProduct } from '../../types';
+import { IEvents } from '../base/events';
 
 export class Catalog implements ICatalogData {
   protected _catalog: ICatalog | null;

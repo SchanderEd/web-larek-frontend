@@ -1,4 +1,4 @@
-import { IAppState, IBasket, IFormOrder, IProduct } from '../types';
+import { IAppState, IBasket, IFormOrder, IProduct } from '../../types';
 
 export class AppState implements IAppState {
 	protected _basket: IBasket;
@@ -25,10 +25,10 @@ export class AppState implements IAppState {
 		return this._orderData;
 	}
 
-	getIdItems(products: IProduct[]): string[] {
+	getIdItems(): string[] {
 		const itemsId: string[] = [];
 
-		products.map((item) => {
+		this._basket.products.map((item) => {
 			if (item.price === null) {
 				return
 			}
@@ -39,8 +39,8 @@ export class AppState implements IAppState {
 		return itemsId;
 	}
 
-	getTotalBasket(products: IProduct[]): number {
-		return products.reduce((amount, product) => amount + product.price, 0);
+	getTotalBasket(): number {
+		return this._basket.products.reduce((amount, product) => amount + product.price, 0);
 	}
 
 	addProduct(product: IProduct) {

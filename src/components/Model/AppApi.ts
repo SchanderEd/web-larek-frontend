@@ -1,4 +1,4 @@
-import { IApi, ICatalog, IOrder } from '../types';
+import { IApi, ICatalog, IOrder } from '../../types';
 
 export class AppApi {
 	private _baseApi: IApi;

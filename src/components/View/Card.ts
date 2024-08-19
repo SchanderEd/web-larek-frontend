@@ -1,7 +1,7 @@
-import { IProduct } from '../types';
-import { CDN_URL } from '../utils/constants';
-import { Component } from './base/components';
-import { IEvents } from './base/events';
+import { IProduct } from '../../types';
+import { CDN_URL } from '../../utils/constants';
+import { Component } from '../base/components';
+import { IEvents } from '../base/events';
 
 interface ICardView extends IProduct {
 	indexCard: number;
@@ -21,7 +21,6 @@ export class Card extends Component<ICardView> {
 	protected cardImg: HTMLImageElement;
 	protected cardPrice: HTMLElement;
 	protected cardDescription: HTMLElement;
-	protected cartButton: HTMLButtonElement;
 	protected deleteProductBtn: HTMLButtonElement;
 	protected cardBasketBtn: HTMLButtonElement;
 

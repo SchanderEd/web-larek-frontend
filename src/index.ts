@@ -3,16 +3,16 @@ import { EventEmitter } from './components/base/events';
 import { IApi, IAppState, IOrder } from './types';
 import { Api } from './components/base/api';
 import { API_URL, settings } from './utils/constants';
-import { AppApi } from './components/Api';
-import { Catalog } from './components/Catalog';
-import { Card } from './components/Card';
+import { AppApi } from './components/Model/AppApi';
+import { Catalog } from './components/Model/Catalog';
+import { Card } from './components/View/Card';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
-import { Basket } from './components/Basket';
-import { FormContacts } from './components/FormContacts';
-import { FormOrder } from './components/FormOrder';
-import { Success } from './components/Success';
-import { AppState } from './components/AppState';
+import { Basket } from './components/View/Basket';
+import { FormContacts } from './components/View/FormContacts';
+import { FormOrder } from './components/View/FormOrder';
+import { Success } from './components/View/Success';
+import { AppState } from './components/Model/AppState';
 
 /* Темплейты */
 const cardTemplate: HTMLTemplateElement =
@@ -131,7 +131,7 @@ events.on('card:basket', (data: Card) => {
 
 	appState.addProduct(product);
 
-	basket.total = appState.getTotalBasket(appState.getBasket.products);
+	basket.total = appState.getTotalBasket();
 
 	const basketItemCard = new Card(cloneTemplate(cartItemTemplate), events);
 
@@ -167,7 +167,7 @@ events.on('basket:update', () => {
 
 	basket.counter = appState.getBasket.products.length;
 	basket.products = appState.getBasket.products;
-	basket.total = appState.getTotalBasket(appState.getBasket.products);
+	basket.total = appState.getTotalBasket();
 
 	if (appState.getBasket.products.length === 0) {
 		basket.products = null;
@@ -222,12 +222,12 @@ events.on('form:input', (event: HTMLInputElement) => {
 
 events.on('form:complete', () => {
 	const order: IOrder = {
-		items: appState.getIdItems(appState.getBasket.products),
+		items: appState.getIdItems(),
 		payment: appState.getOrderData.paymentMethod,
 		email: appState.getOrderData.email,
 		phone: appState.getOrderData.phone,
 		address: appState.getOrderData.address,
-		total: appState.getTotalBasket(appState.getBasket.products),
+		total: appState.getTotalBasket(),
 	};
 
 	console.log(order)
