@@ -230,8 +230,6 @@ events.on('form:complete', () => {
 		total: appState.getTotalBasket(),
 	};
 
-	console.log(order)
-
 	events.on('success:close', () => {
 		modal.close()
 	})
