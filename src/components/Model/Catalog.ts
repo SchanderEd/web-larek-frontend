@@ -10,7 +10,7 @@ export class Catalog implements ICatalogData {
     this._catalog = catalog;
   }
 
-  set products(catalog: ICatalog) {
+  set catalog(catalog: ICatalog) {
     this._catalog = catalog;
   }
 

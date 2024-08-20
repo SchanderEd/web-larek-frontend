@@ -21,8 +21,36 @@ export class AppState implements IAppState {
 		this._orderData = orderData;
 	}
 
-	get getOrderData() {
-		return this._orderData;
+	set paymentMethod(paymentMethod: string) {
+		this._orderData.paymentMethod = paymentMethod
+	}
+
+	get paymentMethod() {
+		return this._orderData.paymentMethod
+	}
+
+	set address(address: string) {
+		this._orderData.address = address
+	}
+
+	get address() {
+		return this._orderData.address
+	}
+
+	set email(email: string) {
+		this._orderData.email = email
+	}
+
+	get email() {
+		return this._orderData.email
+	}
+
+	set phone(phone: string) {
+		this._orderData.phone = phone
+	}
+
+	get phone() {
+		return this._orderData.phone
 	}
 
 	getIdItems(): string[] {
@@ -52,6 +80,6 @@ export class AppState implements IAppState {
 	}
 
 	clear() {
-		this._basket.products.splice(0, this._basket.products.length);
+		this._basket.products = []
 	}
 }

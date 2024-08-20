@@ -97,6 +97,25 @@ export class Card extends Component<ICardView> {
 
 	set category(category: string) {
 		this.cardCategory.textContent = category;
+		const categoryClass = 'card__category'
+
+		switch (category) {
+			case 'софт-скил':
+				this.cardCategory.classList.add(`${categoryClass}_soft`)
+				return
+			case 'другое':
+				this.cardCategory.classList.add(`${categoryClass}_other`)
+				return
+			case 'дополнительное':
+				this.cardCategory.classList.add(`${categoryClass}_additional`)
+				return
+			case 'хард-скил':
+				this.cardCategory.classList.add(`${categoryClass}_hard`)
+				return
+			case 'кнопка':
+				this.cardCategory.classList.add(`${categoryClass}_button`)
+				return
+		}
 	}
 
 	set description(description: string) {

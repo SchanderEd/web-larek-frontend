@@ -49,18 +49,21 @@ const catalogData = new Catalog(null, events);
 
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(cartTemplate), events);
+let counterBasket: number = appState.getBasket.products.length
 
 const formOrder = new FormOrder(cloneTemplate(orderTemplate), events);
 const formContacts = new FormContacts(cloneTemplate(contactsTemaplate), events);
+
+const success = new Success(cloneTemplate(successTemplate), events);
 
 const gallery = document.querySelector('.gallery');
 const page = document.querySelector('.page');
 
 /* Получение каталога */
 
-Promise.all([api.getCatalog()])
-	.then(([catalog]) => {
-		catalogData.products = catalog;
+api.getCatalog()
+	.then((catalog) => {
+		catalogData.catalog = catalog;
 		basket.products = null;
 		events.emit('catalog:loaded', catalogData);
 	})
@@ -131,8 +134,6 @@ events.on('card:basket', (data: Card) => {
 
 	appState.addProduct(product);
 
-	basket.total = appState.getTotalBasket();
-
 	const basketItemCard = new Card(cloneTemplate(cartItemTemplate), events);
 
 	const productCard = basketItemCard.render({
@@ -142,8 +143,11 @@ events.on('card:basket', (data: Card) => {
 		id: product.id,
 	});
 
+	counterBasket++
+
 	basket.renderItem(productCard)
 	events.emit('basket:update');
+	
 	modal.close()
 });
 
@@ -157,7 +161,10 @@ events.on('basket:delete product', (card: Card) => {
 
 	appState.removeProduct(indexProduct);
 	basket.removeItem(card.id)
-	events.emit('basket:update', basket.list);
+
+	counterBasket--
+
+	events.emit('basket:update');
 });
 
 /* Обновление корзины */
@@ -165,9 +172,9 @@ events.on('basket:delete product', (card: Card) => {
 events.on('basket:update', () => {
 	basket.updateIndexElements(basket.getItems, appState.getBasket.products);
 
-	basket.counter = appState.getBasket.products.length;
 	basket.products = appState.getBasket.products;
 	basket.total = appState.getTotalBasket();
+	basket.counter = counterBasket
 
 	if (appState.getBasket.products.length === 0) {
 		basket.products = null;
@@ -176,6 +183,7 @@ events.on('basket:update', () => {
 
 events.on('basket:clear', () => {
 	basket.clear();
+	counterBasket = 0
 });
 /* Открытие корзины */
 
@@ -195,26 +203,26 @@ events.on('form:submit', () => {
 });
 
 events.on('form:payment', (event: FormOrder) => {
-	appState.getOrderData.paymentMethod = event.paymentMethod;
-	formOrder.paymentMethod = appState.getOrderData.paymentMethod;
+	appState.paymentMethod = event.paymentMethod;
+	formOrder.paymentMethod = appState.paymentMethod;
 	formOrder.validate();
 });
 
 events.on('form:input', (event: HTMLInputElement) => {
 	switch (event.name) {
 		case 'address':
-			appState.getOrderData.address = event.value;
-			formOrder.address = appState.getOrderData.address;
+			appState.address = event.value;
+			formOrder.address = appState.address;
 			formOrder.validate();
 			return;
 		case 'email':
-			appState.getOrderData.email = event.value;
-			formContacts.email = appState.getOrderData.email;
+			appState.email = event.value;
+			formContacts.email = appState.email;
 			formContacts.validate();
 			return;
 		case 'phone':
-			appState.getOrderData.phone = event.value;
-			formContacts.phone = appState.getOrderData.phone;
+			appState.phone = event.value;
+			formContacts.phone = appState.phone;
 			formContacts.validate();
 			return;
 	}
@@ -223,10 +231,10 @@ events.on('form:input', (event: HTMLInputElement) => {
 events.on('form:complete', () => {
 	const order: IOrder = {
 		items: appState.getIdItems(),
-		payment: appState.getOrderData.paymentMethod,
-		email: appState.getOrderData.email,
-		phone: appState.getOrderData.phone,
-		address: appState.getOrderData.address,
+		payment: appState.paymentMethod,
+		email: appState.email,
+		phone: appState.phone,
+		address: appState.address,
 		total: appState.getTotalBasket(),
 	};
 
@@ -237,7 +245,6 @@ events.on('form:complete', () => {
 	api
 		.placeOrder(order)
 		.then((res) => {
-			const success = new Success(cloneTemplate(successTemplate), events);
 			modal.render({ content: success.render() });
 			success.amount = res.total;
 			appState.clear();
